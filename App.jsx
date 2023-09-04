@@ -13,6 +13,7 @@ AppInfoModule.getInstalledApplications()
         // Process the list of installed applications
         console.log(applications);
     })
+    
     .catch(error => {
         console.error(error);
     });
