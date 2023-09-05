@@ -13,8 +13,14 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -50,7 +56,16 @@ public void getInstalledApplications(Promise promise) {
                     WritableMap info = new WritableNativeMap();
                     info.putString("name", packageInfo.loadLabel(pm).toString());
                     info.putString("packagename", packageInfo.packageName);
-                    info.putString("icon", packageInfo.loadIcon(pm).toString());
+                    Drawable icon = packageInfo.loadIcon(pm);
+        if (icon != null) {
+            Bitmap bitmap = ((BitmapDrawable) icon).getBitmap();
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            String base64Icon = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            info.putString("icon", base64Icon);
+        }
+
 
                     // ...
 //
