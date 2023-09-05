@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, FlatList } from 'react-native';
+import { View, Text, Image, FlatList, TouchableOpacity,DeviceEventEmitter } from 'react-native';
 import { NativeModules } from 'react-native';
 
 const App = () => {
@@ -9,20 +9,52 @@ const App = () => {
     // Call the native Android module to get the list of installed applications with icons
     NativeModules.AppInfoModule.getInstalledApplications()
       .then((result) => {
-        console.log(result);
+        // console.log(result);
         setAppList(result);
       })
       .catch((error) => {
         console.error('Error retrieving app list:', error);
       });
   }, []);
+const Clone=(val)=>{
+  NativeModules.AppInfoModule.copyAndOpenAPKFile(val)
+  .then((result) => {
+    console.log(result);
+    // setAppList(result);
+  })
+  .catch((error) => {
+    console.error('Error retrieving app list:', error);
+  });
+}
+useEffect(() => {
+  // Listen for an event indicating that the APK file is opened
+  DeviceEventEmitter.addListener('APKOpened', () => {
+    setAppOpened(true);
+  });
 
+  return () => {
+    DeviceEventEmitter.removeAllListeners();
+  };
+}, []);
+
+const openAndCopyAPK = async (val) => {
+  console.log(val);
+  try {
+   var result= await NativeModules.AppInfoModule.copyAndOpenAPKFile(val);
+   console.log(result);
+  } catch (error) {
+    console.error(error);
+  }
+};
   return (
     <View>
       <FlatList
         data={appList}
         renderItem={({ item }) => (
-          <View>
+          <TouchableOpacity
+          
+          onPress={()=>openAndCopyAPK(item.packagename)}
+          >
             <Text>{item.name}</Text>
             {item.icon && (
               <Image
@@ -30,7 +62,7 @@ const App = () => {
                 source={{ uri: 'data:image/png;base64,' + item.icon }}
               />
             )}
-          </View>
+          </TouchableOpacity>
         )}
         keyExtractor={(item, index) => index.toString()}
       />
