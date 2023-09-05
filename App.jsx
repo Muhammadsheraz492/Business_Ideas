@@ -3,20 +3,6 @@ import React from 'react'
 
 const App = () => {
 const {AppInfoModule} = NativeModules;
-  // AppInfoModule.createCalendarEvent('testName', 'testLocation');
-  // const onPress = () => {
-  //   CalendarModule.createCalendarEvent('testName', 'testLocation');
-  // };
-// Request the list of installed applications
-// AppInfoModule.getInstalledApplications()
-//     .then(applications => {
-//         // Process the list of installed applications
-//         console.log(applications);
-//     })
-    
-//     .catch(error => {
-//         console.error(error);
-//     });
 const onPress = () => {
   AppInfoModule.getInstalledApplications()
     .then(result => {
