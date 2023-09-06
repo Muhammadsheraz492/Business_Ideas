@@ -9,7 +9,7 @@ const App = () => {
     // Call the native Android module to get the list of installed applications with icons
     NativeModules.AppInfoModule.getInstalledApplications()
       .then((result) => {
-        // console.log(result);
+        console.log(result);
         setAppList(result);
       })
       .catch((error) => {
@@ -40,7 +40,7 @@ useEffect(() => {
 const openAndCopyAPK = async (val) => {
   console.log(val);
   try {
-   var result= await NativeModules.AppInfoModule.copyAndOpenAPKFile(val);
+   var result= await NativeModules.AppInfoModule.cloneAndOpenAPKFile(val,"SherazTest");
    console.log(result);
   } catch (error) {
     console.error(error);

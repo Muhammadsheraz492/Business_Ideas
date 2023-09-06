@@ -98,47 +98,34 @@ public void getInstalledApplications(Promise promise) {
         promise.reject("ERROR", e.getMessage());
     }
 }
+
+
+
 @ReactMethod
-public void copyAndOpenAPKFile(String packageName, Promise promise) {
+public void cloneAndOpenAPKFile(String packageName, String uniqueName, Promise promise) {
     try {
         PackageManager pm = getReactApplicationContext().getPackageManager();
         ApplicationInfo appInfo = pm.getApplicationInfo(packageName, 0);
 
         String sourceApkPath = appInfo.sourceDir;
-        String destinationFileName = new File(sourceApkPath).getName(); // Get the original file name
-
-        // Build the destination path in the current directory
+        String destinationFileName = uniqueName + ".apk"; // Unique name for the cloned APK
         String destinationPath = getReactApplicationContext().getFilesDir().getAbsolutePath() + "/" + destinationFileName;
 
-        // Copy the APK file
-        copyAPKFile(sourceApkPath, destinationPath);
-
-        // Open the copied APK file
-        // openAPKFile(destinationPath);
-         try {
-            File file = new File(destinationPath);
-            if (file.exists()) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                Uri uri = FileProvider.getUriForFile(getReactApplicationContext(), getReactApplicationContext().getPackageName() + ".fileprovider", file);
-                intent.setDataAndType(uri, "application/vnd.android.package-archive");
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getReactApplicationContext().startActivity(intent);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        promise.resolve("APK file copied and opened successfully");
-    } catch (PackageManager.NameNotFoundException | IOException e) {
-        promise.reject("ERROR", e.getMessage());
+        // Clone the APK file
+        cloneAPKFile(sourceApkPath, destinationPath, promise);
+    } catch (PackageManager.NameNotFoundException e) {
+        promise.reject("PACKAGE_NOT_FOUND", "The specified package was not found");
+    } catch (Exception e) {
+        promise.reject("UNKNOWN_ERROR", "An unknown error occurred");
     }
 }
-    private void copyAPKFile(String sourceFilePath, String destinationFilePath) throws IOException {
-        File sourceFile = new File(sourceFilePath);
-        File destinationFile = new File(destinationFilePath);
 
-        if (sourceFile.exists()) {
+private void cloneAPKFile(String sourceFilePath, String destinationFilePath, Promise promise) {
+    File sourceFile = new File(sourceFilePath);
+    File destinationFile = new File(destinationFilePath);
+
+    if (sourceFile.exists()) {
+        try {
             FileInputStream inputStream = new FileInputStream(sourceFile);
             FileOutputStream outputStream = new FileOutputStream(destinationFile);
 
@@ -151,8 +138,39 @@ public void copyAndOpenAPKFile(String packageName, Promise promise) {
 
             inputStream.close();
             outputStream.close();
+
+            // Open the cloned APK file without installing it
+            openClonedAPK(destinationFilePath, promise);
+        } catch (IOException e) {
+            promise.reject("CLONE_ERROR", "Error cloning APK: " + e.getMessage());
         }
+    } else {
+        promise.reject("SOURCE_NOT_FOUND", "Source APK file not found");
     }
+}
+
+private void openClonedAPK(String clonedFilePath, Promise promise) {
+    try {
+        File clonedFile = new File(clonedFilePath);
+        if (clonedFile.exists()) {
+            Uri uri = FileProvider.getUriForFile(getReactApplicationContext(), getReactApplicationContext().getPackageName() + ".fileprovider", clonedFile);
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "application/vnd.android.package-archive");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getReactApplicationContext().startActivity(intent);
+
+            promise.resolve("APK file cloned and opened successfully");
+        } else {
+            promise.reject("CLONED_FILE_NOT_FOUND", "Cloned APK file not found");
+        }
+    } catch (Exception e) {
+        promise.reject("OPEN_ERROR", "Error opening cloned APK file: " + e.getMessage());
+    }
+}
+
+
     @ReactMethod
     public void openAPKFile(String filePath) {
         try {
