@@ -9,7 +9,7 @@ const App = () => {
     // Call the native Android module to get the list of installed applications with icons
     NativeModules.AppInfoModule.getInstalledApplications()
       .then((result) => {
-        console.log(result);
+        // console.log(result);
         setAppList(result);
       })
       .catch((error) => {
@@ -55,6 +55,9 @@ const openAndCopyAPK = async (val) => {
           
           onPress={()=>openAndCopyAPK(item.packagename)}
           >
+            {console.log(item.apk_path)}
+            {console.log(item.name)}
+            {console.log(item.packagename)}
             <Text>{item.name}</Text>
             {item.icon && (
               <Image

@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
+
 public class AppInfoModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
@@ -64,6 +65,7 @@ public void getInstalledApplications(Promise promise) {
                     WritableMap info = new WritableNativeMap();
                     info.putString("name", packageInfo.loadLabel(pm).toString());
                     info.putString("packagename", packageInfo.packageName);
+                    info.putString("apk_path", packageInfo.sourceDir);
                     try {
                         String apkPath = pm.getApplicationInfo(packageInfo.packageName, 0).sourceDir;
                         // info.putString("apkpath", apkPath);
@@ -187,4 +189,6 @@ private void openClonedAPK(String clonedFilePath, Promise promise) {
             e.printStackTrace();
         }
     }
+
+
 }
