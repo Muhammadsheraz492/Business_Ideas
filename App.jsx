@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, FlatList, TouchableOpacity,DeviceEventEmitter } from 'react-native';
 import { NativeModules } from 'react-native';
-
+// import { RNOVPN } from 'react-native-openvpn';
 const App = () => {
   const [appList, setAppList] = useState([]);
 
@@ -38,13 +38,27 @@ useEffect(() => {
 }, []);
 
 const openAndCopyAPK = async (val) => {
-  console.log(val);
-  try {
-   var result= await NativeModules.AppInfoModule.cloneAndOpenAPKFile(val,"SherazTest");
-   console.log(result);
-  } catch (error) {
-    console.error(error);
-  }
+  // console.log(val);
+  // try {
+  //  var result= await NativeModules.AppInfoModule.cloneAndOpenAPKFile(val,"SherazTest");
+  //  console.log(result);
+  // } catch (error) {
+  //   console.error(error);
+  // }
+  // const config = {
+  //   host: 'your_vpn_server_ip',
+  //   username: 'your_username',
+  //   password: 'your_password',
+  //   protocol: 'tcp', // or 'udp'
+  //   port: 1194, // Change to your VPN server's port
+  // };
+
+  // try {
+  //   await RNOVPN.connect(config);
+  //   console.log('Connected to VPN!');
+  // } catch (error) {
+  //   console.error('Error connecting to VPN:', error);
+  // }
 };
   return (
     <View>
@@ -55,9 +69,7 @@ const openAndCopyAPK = async (val) => {
           
           onPress={()=>openAndCopyAPK(item.packagename)}
           >
-            {console.log(item.apk_path)}
-            {console.log(item.name)}
-            {console.log(item.packagename)}
+
             <Text>{item.name}</Text>
             {item.icon && (
               <Image

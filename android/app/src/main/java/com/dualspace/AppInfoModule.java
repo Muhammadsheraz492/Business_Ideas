@@ -26,6 +26,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.net.VpnService;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -34,13 +35,18 @@ import androidx.core.content.FileProvider;
 
 
 public class AppInfoModule extends ReactContextBaseJavaModule {
-
+    private static final String SERVER_IP = "your_server_ip";
+    private static final int SERVER_PORT = 443;
+    private static final String USERNAME = "your_username";
+    private static final String PASSWORD = "your_password";
     private final ReactApplicationContext reactContext;
     public static WritableArray applist;
-
+    private VpnService  vpnService;
+//    private  Vpn
     public AppInfoModule(ReactApplicationContext context) {
         super(context);
         reactContext = context;
+        vpnService=new VpnService();
     }
 
     @Override
