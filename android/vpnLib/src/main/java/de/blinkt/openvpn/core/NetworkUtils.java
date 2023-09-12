@@ -27,15 +27,14 @@ public class NetworkUtils {
 
                 NetworkCapabilities nc = conn.getNetworkCapabilities(network);
 
-                if(nc != null){
-                    // Skip VPN networks like ourselves
-                    if (nc.hasTransport(NetworkCapabilities.TRANSPORT_VPN))
-                        continue;
+                // Skip VPN networks like ourselves
+                if (nc.hasTransport(NetworkCapabilities.TRANSPORT_VPN))
+                    continue;
 
-                    // Also skip mobile networks
-                    if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR))
-                        continue;
-                }
+                // Also skip mobile networks
+                if (nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR))
+                    continue;
+
 
                 for (LinkAddress la : li.getLinkAddresses()) {
                     if ((la.getAddress() instanceof Inet4Address && !ipv6) ||

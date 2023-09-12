@@ -113,7 +113,7 @@ dependencies {
     // implementation project(path:":android:vpnLib")
     implementation("com.facebook.react:react-android")
     // implementation 'com.example:openvpn3-library:1.0.0'
-       implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':vpnLib')
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {

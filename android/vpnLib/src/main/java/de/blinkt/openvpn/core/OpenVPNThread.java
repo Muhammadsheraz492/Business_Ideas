@@ -56,12 +56,12 @@ public class OpenVPNThread implements Runnable {
     }
 
     public void stopProcess() {
-        if (mProcess != null)
-            mProcess.destroy();
+        mProcess.destroy();
     }
 
-    void setReplaceConnection() {
-        mNoProcessExitStatus = true;
+    void setReplaceConnection()
+    {
+        mNoProcessExitStatus=true;
     }
 
     @Override
@@ -124,15 +124,14 @@ public class OpenVPNThread implements Runnable {
         }
     }
 
-    public static boolean stop() {
+    public static boolean stop(){
         mService.openvpnStopped();
-        if (mProcess != null)
-            mProcess.destroy();
+        mProcess.destroy();
         return true;
     }
 
     private void startOpenVPNThreadArgs(String[] argv) {
-        LinkedList<String> argvlist = new LinkedList<>();
+        LinkedList<String> argvlist = new LinkedList<String>();
 
         Collections.addAll(argvlist, argv);
 
@@ -140,7 +139,6 @@ public class OpenVPNThread implements Runnable {
         // Hack O rama
 
         String lbpath = genLibraryPath(argv, pb);
-        Log.i(TAG, lbpath);
 
         pb.environment().put("LD_LIBRARY_PATH", lbpath);
         pb.environment().put("TMPDIR", mTmpDir);
@@ -152,15 +150,19 @@ public class OpenVPNThread implements Runnable {
             mProcess.getOutputStream().close();
             InputStream in = mProcess.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.startsWith(DUMP_PATH_STRING))
-                    mDumpPath = line.substring(DUMP_PATH_STRING.length());
 
-                if (line.startsWith(BROKEN_PIE_SUPPORT) || line.contains(BROKEN_PIE_SUPPORT2))
+            while (true) {
+                String logline = br.readLine();
+                if (logline == null)
+                    return;
+
+                if (logline.startsWith(DUMP_PATH_STRING))
+                    mDumpPath = logline.substring(DUMP_PATH_STRING.length());
+
+                if (logline.startsWith(BROKEN_PIE_SUPPORT) || logline.contains(BROKEN_PIE_SUPPORT2))
                     mBrokenPie = true;
 
-                Matcher m = LOG_PATTERN.matcher(line);
+                Matcher m = LOG_PATTERN.matcher(logline);
                 int logerror = 0;
                 if (m.matches()) {
                     int flags = Integer.parseInt(m.group(3), 16);
@@ -185,11 +187,11 @@ public class OpenVPNThread implements Runnable {
                         logerror = 1;
 
                     VpnStatus.logMessageOpenVPN(logStatus, logLevel, msg);
-                    if (logerror == 1)
+                    if (logerror==1)
                         VpnStatus.logError("OpenSSL reported a certificate with a weak hash, please the in app FAQ about weak hashes");
 
                 } else {
-                    VpnStatus.logInfo("P:" + line);
+                    VpnStatus.logInfo("P:" + logline);
                 }
 
                 if (Thread.interrupted()) {
@@ -197,7 +199,6 @@ public class OpenVPNThread implements Runnable {
                 }
             }
         } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
             VpnStatus.logException("Error reading from output of OpenVPN process", e);
             stopProcess();
         }

@@ -14,6 +14,12 @@ import android.graphics.Color;
 import android.os.Build;
 
 import android.os.StrictMode;
+import android.provider.Settings;
+
+// import com.google.android.gms.ads.MobileAds;
+// import com.google.android.gms.ads.initialization.InitializationStatus;
+// import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+
 import de.blinkt.openvpn.BuildConfig;
 import de.blinkt.openvpn.R;
 import de.blinkt.openvpn.api.AppRestrictions;

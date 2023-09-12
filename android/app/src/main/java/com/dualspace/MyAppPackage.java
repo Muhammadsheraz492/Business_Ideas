@@ -23,6 +23,10 @@ public class MyAppPackage implements ReactPackage {
        List<NativeModule> modules = new ArrayList<>();
 
        modules.add(new AppInfoModule(reactContext));
+       modules.add(new NizVpnModule(reactContext));
+       modules.add(new OpenVPNModule(reactContext));
+//       modules.add(new NizVpnModule(reactContext));
+
 //       modules.add(new CalendarModule(reactContext));
 
        return modules;

@@ -322,13 +322,7 @@ public class ExternalOpenVPNService extends Service implements StateListener {
         mCallbacks.kill();
         unbindService(mConnection);
         VpnStatus.removeStateListener(this);
-        try {
-            unregisterReceiver(mBroadcastReceiver);
-        } catch (IllegalArgumentException ignored) {
-            // I don't know why  this happens:
-            // java.lang.IllegalArgumentException: Receiver not registered: de.blinkt.openvpn.NetworkSateReceiver@41a61a10
-            // Ignore for now ... 
-        }
+        unregisterReceiver(mBroadcastReceiver);
     }
 
 
