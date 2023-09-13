@@ -115,6 +115,7 @@ dependencies {
     // implementation 'com.example:openvpn3-library:1.0.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':vpnLib')
+    // implementation 'com.android.tools.build:builder:7.4.2'
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.squareup.okhttp3', module:'okhttp'
